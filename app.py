@@ -14,6 +14,14 @@ connect_db(app)
 app.app_context().push()
 
 @app.route('/')
-def list_users():
-    """Shows lsit of all pets in db"""
-    return "Welcome to Users"
+def redirect_to_users_list():
+    return redirect("/users")
+
+@app.route('/users')
+def list_all_users():
+    users = User.query.all()
+    return render_template('users_list.html', users=users)
+
+@app.route('/users/new')
+def add_user_form():
+    return render_template("add_user_form.html")
