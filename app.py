@@ -32,6 +32,10 @@ def add_user():
     last_name = request.form["last_name"]
     image_url = request.form["image_url"] if request.form["image_url"] else None
 
+    if not first_name:
+        flash("Please enter in a first name!")
+        return redirect('/users/new')
+
     new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
     db.session.add(new_user)
     db.session.commit()
@@ -51,6 +55,10 @@ def edit_user_form(user_id):
 @app.route('/users/<int:user_id>/edit', methods=["POST"])
 def update_user(user_id):
     updated_user = User.query.get_or_404(user_id)
+
+    if not request.form["first_name"]:
+        flash("The user's first name cannot be empty!")
+        return redirect(f'/users/{user_id}/edit')
 
     updated_user.first_name = request.form["first_name"]
     updated_user.last_name = request.form["last_name"]
