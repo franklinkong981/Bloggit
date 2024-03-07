@@ -3,6 +3,14 @@
 {% block title %}Add User Form{% endblock %}
 
 {% block content %}
-    <h1>Create a New User</h1>
+    <form action="/users/new" method="POST">
+        <label for="first-name-field">First Name</label>
+        <input type="text" id="first-name-field" name="first_name" placeholder="Enter a first name"/>
+        <label for="last-name-field">Last Name</label>
+        <input type="text" id="last-name-field" name="last_name" placeholder="Enter a last name"/>
+        <label for="image-url-field">ImageURL</label>
+        <input type="text" id="image-url-field" name="image_url" placeholder="Provide link to an image for this user"/>
+        <button>Add User</button>
+    </form>
     <a href="/users"><button>Go Back</button></a>
 {% endblock %}
