@@ -14,6 +14,9 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User id={self.id} name={self.first_name} {self.last_name}>"
+    
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.Text, nullable=False)
