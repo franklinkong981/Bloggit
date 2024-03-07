@@ -12,3 +12,8 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 app.app_context().push()
+
+@app.route('/')
+def list_users():
+    """Shows lsit of all pets in db"""
+    return "Welcome to Users"
