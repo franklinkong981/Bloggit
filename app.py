@@ -19,7 +19,7 @@ def redirect_to_users_list():
 
 @app.route('/users')
 def list_all_users():
-    users = User.query.all()
+    users = User.query.order_by(User.last_name, User.first_name).all()
     return render_template('users_list.html', users=users)
 
 @app.route('/users/new')
