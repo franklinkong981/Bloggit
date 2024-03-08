@@ -1,8 +1,10 @@
+"""This file contains the method for creating an application instance and the routes for the main Bloggit application."""
 from flask import Flask, request, render_template, redirect, flash, jsonify, session, make_response
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User 
 
 def create_app(db_name, testing=False):
+    """Create an instance of the app so I can have a production database and a separate testing database."""
     app = Flask(__name__)
     app.testing = testing
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql:///{db_name}'
@@ -18,19 +20,25 @@ def create_app(db_name, testing=False):
 
     @app.route('/')
     def redirect_to_users_list():
+        """Home page. This will redirect to the main page, /users."""
         return redirect("/users")
 
     @app.route('/users')
     def list_all_users():
+        """Lists all users by their full name (first name then last name) currently in the database."""
         users = User.query.order_by(User.last_name, User.first_name).all()
         return render_template('users_list.html', users=users)
 
     @app.route('/users/new')
     def add_user_form():
+        """Displays a form to add a new user by typing in the user's first name, last name, and an optional image url for their profile picture."""
         return render_template("add_user_form.html")
 
     @app.route('/users/new', methods=["POST"])
     def add_user():
+        """Adds a new user to the database and redirects to the main page where the new user is displayed.
+        All fields are optional EXCEPT for first name field, user must provide a first name or they will be taken back
+        to the add user form and an error message will be displayed."""
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
         image_url = request.form["image_url"] if request.form["image_url"] else None
@@ -47,16 +55,23 @@ def create_app(db_name, testing=False):
 
     @app.route('/users/<int:user_id>')
     def show_user_details(user_id):
+        """Shows detailed information about the user on their own page, including the user's profile picture and their full name.
+        Also contains buttons to edit the user information as well as delete the user from the database."""
         user = User.query.get_or_404(user_id)
         return render_template("user_details.html", user=user)
 
     @app.route('/users/<int:user_id>/edit')
     def edit_user_form(user_id):
+        """Displays a form to edit a user's informationthat looks like the add user form, but the fields are already pre-filled 
+        with the user's information (first name, last name, and image url). Submitting the form will update this particular
+        user's information."""
         user = User.query.get_or_404(user_id)
         return render_template("edit_user_form.html", user=user)
 
     @app.route('/users/<int:user_id>/edit', methods=["POST"])
     def update_user(user_id):
+        """Submits the edit user form for a particular user. Once again, if the first name field is empty, you will be sent 
+        back to the edit user form with an error message. Otherwise, redirects to /users page showing the user's new full name."""
         updated_user = User.query.get_or_404(user_id)
 
         if not request.form["first_name"]:
@@ -74,6 +89,7 @@ def create_app(db_name, testing=False):
 
     @app.route('/users/<int:user_id>/delete', methods=["POST"])
     def delete_user(user_id):
+        """Deletes the user with the specific user_id's information from the database, redirects you to the users list page."""
         User.query.filter_by(id=user_id).delete()
 
         db.session.commit()

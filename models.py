@@ -1,3 +1,5 @@
+"""This file contains the models for the Bloggit app, establishing the tables and columsn in tables in the bloggit database.
+Models include Users and Posts."""
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -18,6 +20,7 @@ class User(db.Model):
         return f"<User id={self.id} name={self.first_name} {self.last_name}>"
     
     def get_full_name(self):
+        """Returns the full name (first name then last name) of a particular user. This method is here for convenience."""
         return f"{self.first_name} {self.last_name}"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
