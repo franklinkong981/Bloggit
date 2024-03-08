@@ -1,7 +1,11 @@
-"""Seed file to make sample data for tables for Users and Posts so I can start off with some sample data on the first test."""
+# Seed file to make sample data for tables for Users and Posts so I can start off with some sample data on the first test.
 
-from models import User, db
-from app import app
+from models import User, db, connect_db
+from app import create_app
+
+app = create_app('bloggit')
+connect_db(app)
+app.app_context().push()
 
 # Create all tables
 db.drop_all()

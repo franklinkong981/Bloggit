@@ -1,11 +1,10 @@
 from unittest import TestCase
-from app import app
-from models import db, User
+from app import create_app
+from models import db, connect_db, User
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bloggit_test'
-app.config['SQLALCHEMY_ECHO'] = False
-app.config['TESTING'] = True
-app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
+app = create_app("bloggit_test", testing=True)
+connect_db(app)
+app.app_context().push()
 
 db.drop_all()
 db.create_all()
@@ -33,70 +32,60 @@ class UserViewsTestCase(TestCase):
 
     def test_list_users(self):
         with app.test_client() as client:
-            resp = client.get("/")
+            resp = client.get("/", follow_redirects=True)
             html = resp.get_data(as_text=True)
 
-
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('TestPet', html)
-
+            self.assertIn('Users List', html)
+            self.assertIn('Lucky', html)
+            self.assertIn('Pru', html)
+            self.assertIn('Abigail', html)
 
     def test_add_user(self):
         with app.test_client() as client:
-            resp = client.get(f"/{self.pet_id}")
+            resp = client.post("/users/new", data={'first_name': 'John', 'last_name': 'Smith', 'image_url': ''}, follow_redirects=True)
             html = resp.get_data(as_text=True)
 
-
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<h1>TestPet</h1>', html)
+            self.assertIn('John Smith', html)
 
 
     def test_add_invalid_user(self):
         with app.test_client() as client:
-            d = {"name": "TestPet2", "species": "cat", "hunger": 20}
-            resp = client.post("/", data=d, follow_redirects=True)
-            html = resp.get_data(as_text=True)
+            resp = client.post("/users/new", data={'first_name': '', 'last_name': 'Smith', 'image_url': ''})
 
-
-            self.assertEqual(resp.status_code, 200)
-            self.assertIn("<h1>TestPet2</h1>", html)
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.location, "/users/new")
     
     def test_user_details(self):
         with app.test_client() as client:
-            d = {"name": "TestPet2", "species": "cat", "hunger": 20}
-            resp = client.post("/", data=d, follow_redirects=True)
+            resp = client.get(f"/users/{self.lucky_id}")
             html = resp.get_data(as_text=True)
 
-
             self.assertEqual(resp.status_code, 200)
-            self.assertIn("<h1>TestPet2</h1>", html)
+            self.assertIn('Details on User Lucky Prescott', html)
+            self.assertIn('Edit User', html)
+            self.assertIn('Delete User', html)
     
     def test_edit_user(self):
         with app.test_client() as client:
-            d = {"name": "TestPet2", "species": "cat", "hunger": 20}
-            resp = client.post("/", data=d, follow_redirects=True)
+            resp = client.post(f"/users/{self.lucky_id}/edit", data={'first_name': 'Fortuna', 'last_name': 'Prescott', 'image_url': ''}, follow_redirects=True)
             html = resp.get_data(as_text=True)
 
-
             self.assertEqual(resp.status_code, 200)
-            self.assertIn("<h1>TestPet2</h1>", html)
+            self.assertIn('Fortuna Prescott', html)
     
     def test_edit_invalid_user(self):
         with app.test_client() as client:
-            d = {"name": "TestPet2", "species": "cat", "hunger": 20}
-            resp = client.post("/", data=d, follow_redirects=True)
-            html = resp.get_data(as_text=True)
+            resp = client.post(f"/users/{self.lucky_id}/edit", data={'first_name': '', 'last_name': 'Prescott', 'image_url': ''})
 
-
-            self.assertEqual(resp.status_code, 200)
-            self.assertIn("<h1>TestPet2</h1>", html)
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp.location, f"/users/{self.lucky_id}/edit")
     
     def delete_user(self):
         with app.test_client() as client:
-            d = {"name": "TestPet2", "species": "cat", "hunger": 20}
-            resp = client.post("/", data=d, follow_redirects=True)
+            resp = client.post(f"/users/{self.lucky_id}/delete", follow_redirects=True)
             html = resp.get_data(as_text=True)
 
-
             self.assertEqual(resp.status_code, 200)
-            self.assertIn("<h1>TestPet2</h1>", html)
+            self.assertNotIn('Lucky Prescott', html)

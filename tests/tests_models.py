@@ -1,9 +1,10 @@
 from unittest import TestCase
-from app import app
-from models import db, User
+from app import create_app
+from models import db, connect_db, User
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bloggit_test'
-app.config['SQLALCHEMY_ECHO'] = False
+app = create_app("bloggit_test", testing=True)
+connect_db(app)
+app.app_context().push()
 
 db.drop_all()
 db.create_all()
@@ -18,4 +19,4 @@ class UserModelTestCase(TestCase):
 
     def test_get_full_name(self):
         user = User(first_name="TestUser", last_name="Zach")
-        self.assertEquals(user.get_full_name(), "TestUser Zach")
+        self.assertEqual(user.get_full_name(), "TestUser Zach")
