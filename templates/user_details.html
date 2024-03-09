@@ -4,7 +4,7 @@
 
 {% block content %}
     <img src={{user.image_url}} alt="{{user.get_full_name()}}'s profile picture"/>
-    <h1>{{user.first_name}} {{user.last_name}}</h1>
+    <h1 class="h1">{{user.first_name}} {{user.last_name}}</h1>
     <form>
         <button formaction="/users/{{ user.id }}/edit" formmethod="GET">Edit User</button>
         <button formaction="/users/{{ user.id }}/delete" formmethod="POST">Delete User</button>

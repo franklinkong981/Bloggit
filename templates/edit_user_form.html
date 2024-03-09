@@ -3,6 +3,7 @@
 {% block title %}Edit User Form for {{user.get_full_name()}}{% endblock %}
 
 {% block content %}
+    <h1 class="display-1 text-center">Edit User</h1>
     <form action="/users/{{user.id}}/edit" method="POST">
         <label for="first-name-field">First Name</label>
         <input type="text" id="first-name-field" name="first_name" value="{{user.first_name}}"/>
