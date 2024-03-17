@@ -1,7 +1,7 @@
 """This file contains the method for creating an application instance and the routes for the main Bloggit application."""
 from flask import Flask, request, render_template, redirect, flash, jsonify, session, make_response
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User 
+from models import db, connect_db, User, Post 
 
 def create_app(db_name, testing=False):
     """Create an instance of the app so I can have a production database and a separate testing database."""
