@@ -53,6 +53,7 @@ def create_app(db_name, testing=False):
         db.session.add(new_user)
         db.session.commit()
 
+        flash("User successfully added!")
         return redirect('/users')
 
     @app.route('/users/<int:user_id>')
@@ -89,6 +90,7 @@ def create_app(db_name, testing=False):
         db.session.add(updated_user)
         db.session.commit()
 
+        flash("User successfully updated!")
         return redirect('/users')
 
     @app.route('/users/<int:user_id>/delete', methods=["POST"])
@@ -98,6 +100,7 @@ def create_app(db_name, testing=False):
 
         db.session.commit()
 
+        flash("User successfully deleted!")
         return redirect('/users')
     
     @app.route('/users/<int:user_id>/posts/new')
@@ -134,6 +137,7 @@ def create_app(db_name, testing=False):
         new_post = Post(title=title, content=content, user_id=user_id)
         db.session.add(new_post)
         db.session.commit()
+        flash("Post successfully added!")
         return redirect(f'/users/{user_id}')
     
     @app.route('/posts/<int:post_id>')
@@ -176,6 +180,7 @@ def create_app(db_name, testing=False):
         post.content = request.form["content"]
         db.session.add(post)
         db.session.commit()
+        flash("Post successfully updated!")
         return redirect(f'/posts/{post_id}')
     
     @app.route('/posts/<int:post_id>/delete', methods=["POST"])
@@ -187,6 +192,7 @@ def create_app(db_name, testing=False):
         Post.query.filter_by(id=post_id).delete()
         db.session.commit()
 
+        flash("Post successfully deleted!")
         return redirect(f'/users/{author_id}')
 
     return app
