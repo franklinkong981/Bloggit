@@ -55,10 +55,12 @@ def create_app(db_name, testing=False):
 
     @app.route('/users/<int:user_id>')
     def show_user_details(user_id):
-        """Shows detailed information about the user on their own page, including the user's profile picture and their full name.
-        Also contains buttons to edit the user information as well as delete the user from the database."""
+        """Shows detailed information about the user on their own page, including the user's profile picture and their full name, with
+        buttons to edit the user information as well as delete the user from the database. Also shows a list of their posts as links
+        to pages where users can see each post, and finally a button to add a new post."""
         user = User.query.get_or_404(user_id)
-        return render_template("user_details.html", user=user)
+        posts = Post.query.filter_by(user_id=user_id).order_by(Post.id.desc()).all()
+        return render_template("user_details.html", user=user, posts=posts)
 
     @app.route('/users/<int:user_id>/edit')
     def edit_user_form(user_id):
