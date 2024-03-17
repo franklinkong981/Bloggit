@@ -10,7 +10,7 @@
 
     <form>
         <button formaction="/users/{{post.user_id}}" formmethod="GET">Go Back</button>
-        <button formaction="/posts/{{ post.id }}/edit" formmethod="GET">Edit Post</button>
-        <button formaction="/posts/{{ post.id }}/delete" formmethod="POST">Delete Post</button>
+        <button formaction="/posts/{{post.id}}/edit" formmethod="GET">Edit Post</button>
+        <button formaction="/posts/{{post.id}}/delete" formmethod="POST">Delete Post</button>
     </form>
 {% endblock %}

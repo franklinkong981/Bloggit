@@ -140,6 +140,41 @@ def create_app(db_name, testing=False):
         detailed author page, edit the post, and delete the post."""
         post = Post.query.get_or_404(post_id)
         return render_template("post_details.html", post=post)
+    
+    @app.route('/posts/<int:post_id>/edit')
+    def edit_post_form(post_id):
+        """Display the form that allows the user to update a particular post with the title and content fields already prefilled
+        with the title and content of the current version of the post."""
+        post = Post.query.get_or_404(post_id)
+        return render_template("edit_post_form.html", post=post)
+    
+    @app.route('/posts/<int:post_id>/edit', methods=["POST"])
+    def update_post(post_id):
+        """Submits the edit post form for a particular user. If the title/content fields are empty OR title field is more than 50 characters,
+        redirects you back to the edit postform with error messages. Otherwise, successfuly updates the post in the database and redirects to the user's
+        post view page."""
+        post = Post.query.get_or_404(post_id)
+        error_count = 0
+
+        # Check for errors
+        if not request.form["title"]:
+            flash("You must include a title!")
+            error_count += 1
+        elif len(request.form["title"]) > 50:
+            flash("Your title can't be longer than 50 characters!")
+            error_count += 1
+        if not request.form["content"]:
+            flash("You must include content in your post!")
+            error_count += 1
+        
+        if error_count > 0:
+            return redirect(f'/posts/{post_id}/edit')
+        
+        post.title = request.form["title"]
+        post.content = request.form["content"]
+        db.session.add(post)
+        db.session.commit()
+        return redirect(f'/posts/{post_id}')
 
     return app
 

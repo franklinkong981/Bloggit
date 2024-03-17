@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Post form for {{post.title}} by {{post.author.get_full_name()}}{% endblock %}
+
+{% block content %}
+    <h1 class="display-1 text-center">Edit Post for {{post.author.get_full_name()}}</h1>
+    <form action="/posts/{{post.id}}/edit" method="POST">
+        <label for="title-field">Title</label>
+        <input type="text" id="title-field" name="title" value="{{post.title}}"/><br>
+        <label for="content-field">Content</label><br>
+        <textarea id="content-field" name="content" rows="10" cols="100">{{post.content}}</textarea><br>
+        <a href="/posts/{{post.id}}">Cancel</a>
+        <button type="submit">Save Changes</button>
+    </form>
+{% endblock %}
