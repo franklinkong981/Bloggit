@@ -194,6 +194,10 @@ def create_app(db_name, testing=False):
 
         flash("Post successfully deleted!")
         return redirect(f'/users/{author_id}')
+    
+    @app.errorhandler(404) 
+    def not_found(e): 
+        return render_template("404.html") 
 
     return app
 
