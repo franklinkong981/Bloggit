@@ -175,6 +175,17 @@ def create_app(db_name, testing=False):
         db.session.add(post)
         db.session.commit()
         return redirect(f'/posts/{post_id}')
+    
+    @app.route('/posts/<int:post_id>/delete', methods=["POST"])
+    def delete_post(post_id):
+        """Deletes the post with the specific post_id's information from the database, redirects you to the post's  author's list page."""
+        post_to_delete = Post.query.get_or_404(post_id)
+        author_id = post_to_delete.user_id
+
+        Post.query.filter_by(id=post_id).delete()
+        db.session.commit()
+
+        return redirect(f'/users/{author_id}')
 
     return app
 
