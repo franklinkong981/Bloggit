@@ -97,6 +97,42 @@ def create_app(db_name, testing=False):
         db.session.commit()
 
         return redirect('/users')
+    
+    @app.route('/users/<int:user_id>/posts/new')
+    def add_post_form(user_id):
+        """Displays the form for adding a new post for the user whose id is user_id. There are 2 fields in this form: Title and content.
+        Both are required and the title can't be more than 50 characters."""
+        user = User.query.get_or_404(user_id)
+        return render_template("add_post_form.html", user=user)
+    
+    @app.route('/users/<int:user_id>/posts/new', methods=["POST"])
+    def add_post(user_id):
+        """Submits the add post form for a particular user. If the title/content fields are empty OR title field is more than 50 characters,
+        redirects you back to the form with error messages. Otherwise, successfuly adds the post to the database and redirects to the user's
+        details page."""
+        user = User.query.get_or_404(user_id)
+        error_count = 0
+
+        title = request.form["title"]
+        content = request.form["content"]
+        # Check for errors
+        if not title:
+            flash("You must include a title!")
+            error_count += 1
+        elif len(title) > 50:
+            flash("Your title can't be longer than 50 characters!")
+            error_count += 1
+        if not content:
+            flash("You must include content in your post!")
+            error_count += 1
+        
+        if error_count > 0:
+            return redirect(f'/users/{user_id}/posts/new')
+        
+        new_post = Post(title=title, content=content, user_id=user_id)
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(f'/users/{user_id}')
 
     return app
 
