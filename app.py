@@ -20,8 +20,10 @@ def create_app(db_name, testing=False):
 
     @app.route('/')
     def redirect_to_users_list():
-        """Home page. This will redirect to the main page, /users."""
-        return redirect("/users")
+        """Home page. This will show the 5 most recent blog posts from any user and list the title, content, and date/time of 
+        creation for each one."""
+        recent_posts = Post.query.order_by(Post.id.desc()).limit(5)
+        return render_template('home.html', posts=recent_posts)
 
     @app.route('/users')
     def list_all_users():

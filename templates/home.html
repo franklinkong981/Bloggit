@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Bloggit!{% endblock %}
+
+{% block content %}
+    <h1 class="display-1">Bloggit Recent Posts</h1>
+    {% for post in posts %}
+        <h2>{{post.title}}</h2>
+        <p>{{post.content}}</p>
+        <small>By {{post.author.get_full_name()}} on {{post.created_at}}</small>
+        <hr>
+    {% endfor %}
+    <a href="/users">Users List</a>
+{% endblock %}
