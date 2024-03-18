@@ -29,6 +29,7 @@ class User(db.Model):
     last_name = db.Column(db.Text, nullable=True, default="")
     image_url = db.Column(db.Text, nullable=True, default="https://cdn3.iconfinder.com/data/icons/letters-and-numbers-1/32/letter_B_red-512.png")
     
+    posts = db.relationship('Post', cascade='all, delete', backref='author')
 
 class Post(db.Model):
     """Post model. Each post that's created will have an id, title (which can be no longer than 50 characters), content text, 
@@ -45,6 +46,5 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    author = db.relationship('User', backref='posts')
 
 

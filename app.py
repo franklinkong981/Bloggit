@@ -96,8 +96,9 @@ def create_app(db_name, testing=False):
     @app.route('/users/<int:user_id>/delete', methods=["POST"])
     def delete_user(user_id):
         """Deletes the user with the specific user_id's information from the database, redirects you to the users list page."""
-        User.query.filter_by(id=user_id).delete()
+        user_to_delete = User.query.get_or_404(user_id)
 
+        db.session.delete(user_to_delete)
         db.session.commit()
 
         flash("User successfully deleted!")
@@ -189,7 +190,7 @@ def create_app(db_name, testing=False):
         post_to_delete = Post.query.get_or_404(post_id)
         author_id = post_to_delete.user_id
 
-        Post.query.filter_by(id=post_id).delete()
+        db.session.delete(post_to_delete)
         db.session.commit()
 
         flash("Post successfully deleted!")
