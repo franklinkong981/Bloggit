@@ -6,9 +6,9 @@
     <img src={{user.image_url}} alt="{{user.get_full_name()}}'s profile picture"/>
     <h1 class="h1">{{user.first_name}} {{user.last_name}}</h1>
     <form>
-        <button formaction="/users" formmethod="GET">Go Back</button>
-        <button formaction="/users/{{ user.id }}/edit" formmethod="GET">Edit User</button>
-        <button formaction="/users/{{ user.id }}/delete" formmethod="POST">Delete User</button>
+        <button class="btn btn-info" formaction="/users" formmethod="GET">Go Back</button>
+        <button class="btn btn-warning" formaction="/users/{{ user.id }}/edit" formmethod="GET">Edit User</button>
+        <button class="btn btn-danger" formaction="/users/{{ user.id }}/delete" formmethod="POST">Delete User</button>
     </form>
     <h2>Posts</h2>
     <ul>
@@ -16,5 +16,5 @@
             <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
         {% endfor %}
     </ul>
-    <a href="/users/{{user.id}}/posts/new">Add Post</a>
+    <a class="btn btn-success" href="/users/{{user.id}}/posts/new">Add Post</a>
 {% endblock %}

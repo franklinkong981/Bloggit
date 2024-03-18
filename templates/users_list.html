@@ -9,6 +9,6 @@
         <li><a href="/users/{{user.id}}">{{user.get_full_name()}}</a></li>
         {% endfor %}
     </ul>
-    <a href="/users/new"><button>Add User</button></a>
-    <a href="/">Home</a>
+    <a class="btn btn-success" href="/users/new">Add User</a>
+    <a class="btn btn-dark" href="/">Home</a>
 {% endblock %}
