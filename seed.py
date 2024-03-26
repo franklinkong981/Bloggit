@@ -1,6 +1,6 @@
 # Seed file to make sample data for tables for Users and Posts so I can start off with some sample data on the first test.
 
-from models import User, Post, db, connect_db
+from models import User, Post, Tag, PostTag, db, connect_db
 from app import create_app
 
 app = create_app('bloggit')
@@ -13,6 +13,9 @@ db.create_all()
 
 # If table isn't empty, empty it
 User.query.delete()
+Post.query.delete()
+Tag.query.delete()
+PostTag.query.delete()
 
 # Create starting users
 franklin = User(first_name='Franklin', last_name='Kong', image_url='https://img.freepik.com/free-photo/ultra-detailed-nebula-abstract-wallpaper-4_1562-749.jpg')
@@ -27,6 +30,8 @@ jeffrey_post1 = Post(title="Good Morning!", content="""I really enjoyed the weat
 jeffrey_post2 = Post(title="Thoughts on Springboard", content="I think the bootcamp my brother is doing is really wonderful!", user_id=2)
 kenny_post1 = Post(title="Welcome to my Startup Blog!", content="""Hi friends! Welcome to my blog where I'll post continual
                    developments over my recent startup! It's going to be lots of fun!""", user_id=3)
+
+# Create starting tags
 
 # Add and commit starting users and posts to the database.
 db.session.add_all([franklin, jeffrey, kenny])

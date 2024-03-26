@@ -46,5 +46,32 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    tags = db.relationship('Tag', secondary='posts_tags', backref='posts')
+    tag_associations = db.relationship('PostTag', cascade='all, delete', backref='post')
 
+class Tag(db.Model):
+    """Tag model. Each Post can be associated with one or more tags. The name of each tag must be unique 
+    and can't be more than 50 characters."""
+
+    __tablename__ = "tags"
+
+    def __repr__(self):
+        return f"<Tag id={self.id} name of tag={self.name}>"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+
+    posts = db.relationship('EmployeeProject', backref='employee')
+    post_associations = db.relationship('PostTag', cascade='all, delete', backref='tag')
+
+class PostTag(db.Model):
+    """PostTag model, each row in this table associates a specific post with a specific tag by listing the post's id with the tag's id."""
+
+    __tablename__ = "posts_tags"
+
+    def __repr__(self):
+        return f"<PostTag post_id={self.post_id} tag_id={self.tag_id}"
+    
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
 
