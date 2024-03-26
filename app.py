@@ -19,7 +19,7 @@ def create_app(db_name, testing=False):
         app.config['SQLALCHEMY_ECHO'] = True 
 
     @app.route('/')
-    def redirect_to_users_list():
+    def show_homepage():
         """Home page. This will show the 5 most recent blog posts from any user and list the title, content, and date/time of 
         creation for each one."""
         recent_posts = Post.query.order_by(Post.id.desc()).limit(5)
@@ -195,6 +195,12 @@ def create_app(db_name, testing=False):
 
         flash("Post successfully deleted!")
         return redirect(f'/users/{author_id}')
+    
+    @app.route('/tags')
+    def show_tags():
+        """Shows a list of all current tags. Each tag name is also a link to a more detailed page about that tag."""
+        tags = Tag.query.all()
+        return render_template('tags_list.html', tags=tags)
     
     @app.errorhandler(404) 
     def not_found(e): 
