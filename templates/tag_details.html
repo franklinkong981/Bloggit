@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Details on the Tag "{{tag.name}}"{% endblock %}
+
+{% block content %}
+    <h1 class="display-1">{{tag.name}}</h1>
+    
+    <ul>
+        {% for post in posts %}
+        <li><a href="/posts/{{post.id}}">{{post.title}}</a><small> by {{post.author.get_full_name()}}</small></li>
+        {% endfor %}
+    </ul>
+
+    <form>
+        <button class="btn btn-info" formaction="/tags" formmethod="GET">Go Back</button>
+        <button class="btn btn-warning" formaction="/tags/{{tag.id}}/edit" formmethod="GET">Edit Tag</button>
+        <button class="btn btn-danger" formaction="/tags/{{tag.id}}/delete" formmethod="POST">Delete Tag</button>
+    </form>
+{% endblock %}

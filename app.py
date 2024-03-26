@@ -202,6 +202,13 @@ def create_app(db_name, testing=False):
         tags = Tag.query.all()
         return render_template('tags_list.html', tags=tags)
     
+    @app.route('/tags/<int:tag_id>')
+    def show_tag_details(tag_id):
+        """Shows the list of posts associated with the specific tag."""
+        current_tag = Tag.query.get_or_404(tag_id)
+        posts = current_tag.posts
+        return render_template('tag_details.html', tag=current_tag, posts=posts)
+    
     @app.errorhandler(404) 
     def not_found(e): 
         return render_template("404.html") 
