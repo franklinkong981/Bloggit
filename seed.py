@@ -32,9 +32,26 @@ kenny_post1 = Post(title="Welcome to my Startup Blog!", content="""Hi friends! W
                    developments over my recent startup! It's going to be lots of fun!""", user_id=3)
 
 # Create starting tags
+tag1 = Tag(name='Weather')
+tag2 = Tag(name='Startup')
+tag3 = Tag(name='First Post')
+tag4 = Tag(name='Springboard')
+
+# Create starting post tags:
+post_tag1 = PostTag(post_id=1, tag_id=3)
+post_tag2 = PostTag(post_id=2, tag_id=4)
+post_tag3 = PostTag(post_id=3, tag_id=3)
+post_tag4 = PostTag(post_id=3, tag_id=1)
+post_tag5 = PostTag(post_id=4, tag_id=4)
+post_tag6 = PostTag(post_id=5, tag_id=3)
+post_tag7 = PostTag(post_id=5, tag_id=2)
 
 # Add and commit starting users and posts to the database.
 db.session.add_all([franklin, jeffrey, kenny])
 db.session.commit()
+db.session.add_all([tag1, tag2, tag3, tag4])
+db.session.commit()
 db.session.add_all([franklin_post1, franklin_post2, jeffrey_post1, jeffrey_post2, kenny_post1])
+db.session.commit()
+db.session.add_all([post_tag1, post_tag2, post_tag3, post_tag4, post_tag5, post_tag6, post_tag7])
 db.session.commit()

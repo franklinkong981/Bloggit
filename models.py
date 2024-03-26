@@ -61,7 +61,6 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
 
-    posts = db.relationship('EmployeeProject', backref='employee')
     post_associations = db.relationship('PostTag', cascade='all, delete', backref='tag')
 
 class PostTag(db.Model):
