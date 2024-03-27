@@ -281,6 +281,16 @@ def create_app(db_name, testing=False):
 
         flash("Tag successfully updated!")
         return redirect('/tags')
+    
+    @app.route('/tags/<int:tag_id>/delete', methods=["POST"])
+    def delete_tag(tag_id):
+        """Deletes the tag and deletes any associations between this tag and all posts."""
+        tag_to_delete = Tag.query.get_or_404(tag_id)
+        db.session.delete(tag_to_delete)
+        db.session.commit()
+
+        flash("Tag successfully deleted!")
+        return redirect('/tags')
 
     @app.errorhandler(404) 
     def not_found(e): 
