@@ -9,6 +9,13 @@
         <input type="text" id="title-field" name="title" value="{{post.title}}"/><br>
         <label for="content-field">Content</label><br>
         <textarea id="content-field" name="content" rows="10" cols="100">{{post.content}}</textarea><br>
+        {% for tag in all_tags %}
+            <input type="checkbox" id="tag-{{tag.name}}" name="selected_tag_ids" value="{{tag.id}}"
+            {% if tag.id in post_tag_ids %}
+                checked
+            {% endif %}>
+            <label for="tag-{{tag.name}}">{{tag.name}}</label><br>
+        {% endfor %}
         <a class="btn btn-light" href="/posts/{{post.id}}">Cancel</a>
         <button type="submit" class="btn btn-success">Save Changes</button>
     </form>

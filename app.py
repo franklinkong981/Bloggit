@@ -146,7 +146,7 @@ def create_app(db_name, testing=False):
             new_post_tag = PostTag(post_id=new_post.id, tag_id=tag_id)
             db.session.add(new_post_tag)
         db.session.commit()
-        
+
         flash("Post successfully added!")
         return redirect(f'/users/{user_id}')
     
@@ -163,7 +163,11 @@ def create_app(db_name, testing=False):
         """Display the form that allows the user to update a particular post with the title and content fields already prefilled
         with the title and content of the current version of the post."""
         post = Post.query.get_or_404(post_id)
-        return render_template("edit_post_form.html", post=post)
+        all_tags = Tag.query.all()
+        post_tag_ids = []
+        for post_tag in post.tags:
+            post_tag_ids.append(post_tag.id)
+        return render_template("edit_post_form.html", post=post, all_tags=all_tags, post_tag_ids=post_tag_ids)
     
     @app.route('/posts/<int:post_id>/edit', methods=["POST"])
     def update_post(post_id):
@@ -189,6 +193,10 @@ def create_app(db_name, testing=False):
         
         post.title = request.form["title"]
         post.content = request.form["content"]
+        post.tags.clear()
+        for tag_id in request.form.getlist('selected_tag_ids'):
+            tag_to_add = Tag.query.get_or_404(tag_id)
+            post.tags.append(tag_to_add)
         db.session.add(post)
         db.session.commit()
         flash("Post successfully updated!")
