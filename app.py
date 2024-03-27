@@ -109,7 +109,8 @@ def create_app(db_name, testing=False):
         """Displays the form for adding a new post for the user whose id is user_id. There are 2 fields in this form: Title and content.
         Both are required and the title can't be more than 50 characters."""
         user = User.query.get_or_404(user_id)
-        return render_template("add_post_form.html", user=user)
+        tags = Tag.query.all()
+        return render_template("add_post_form.html", user=user, tags=tags)
     
     @app.route('/users/<int:user_id>/posts/new', methods=["POST"])
     def add_post(user_id):
@@ -135,9 +136,17 @@ def create_app(db_name, testing=False):
         if error_count > 0:
             return redirect(f'/users/{user_id}/posts/new')
         
+        # Add post to database
         new_post = Post(title=title, content=content, user_id=user_id)
         db.session.add(new_post)
         db.session.commit()
+
+        # Add tag associations
+        for tag_id in request.form.getlist('selected_tag_ids'):
+            new_post_tag = PostTag(post_id=new_post.id, tag_id=tag_id)
+            db.session.add(new_post_tag)
+        db.session.commit()
+        
         flash("Post successfully added!")
         return redirect(f'/users/{user_id}')
     
