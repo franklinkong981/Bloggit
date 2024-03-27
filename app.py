@@ -219,7 +219,6 @@ def create_app(db_name, testing=False):
     def add_tag():
         """Processes the form data to add a new tag. If successful and all constraints are followed, redirects to the tags list page
         where the new added tag is now included. If not, redirects to the add tag form and displays error messages."""
-
         error_count = 0
         tag_name = request.form["tag_name"]
 
@@ -244,6 +243,43 @@ def create_app(db_name, testing=False):
         db.session.commit()
 
         flash("Tag successfully added!")
+        return redirect('/tags')
+    
+    @app.route('/tags/<int:tag_id>/edit')
+    def edit_tag_form(tag_id):
+        """Shows the form to edit/update the tag. The tag still has to be unique, and has to be between 1 and 50 characters."""
+        tag_to_edit = Tag.query.get_or_404(tag_id)
+        return render_template("edit_tag_form.html", tag=tag_to_edit)
+    
+    @app.route('/tags/<int:tag_id>/edit', methods=["POST"])
+    def update_tag(tag_id):
+        """Checks the updated tag from the edit tag form submission to see if it's still the proper length and unique. If it is, update
+        the tag in the database and redirect to the tags list page. If not, redirect to edit tag form and display error messages."""
+        tag_to_update = Tag.query.get_or_404(tag_id)
+        error_count = 0
+        tag_name = request.form["tag_name"]
+
+        #Check for errors
+        if not tag_name:
+            error_count += 1
+            flash("The tag name can't be empty. Please enter a tag name.")
+        elif len(tag_name) > 50:
+            error_count += 1
+            flash("The tag name can't be more than 50 characters.")
+        all_tags = Tag.query.all()
+        for tag in all_tags:
+            if tag.id != tag_id and tag_name == tag.name:
+                error_count += 1
+                flash("The tag name must be unique! Please enter a tag name that doesn't already exist.")
+                break
+        
+        if error_count > 0:
+            return redirect(f'/tags/{tag_id}/edit')
+        tag_to_update.name = tag_name
+        db.session.add(tag_to_update)
+        db.session.commit()
+
+        flash("Tag successfully updated!")
         return redirect('/tags')
 
     @app.errorhandler(404) 
