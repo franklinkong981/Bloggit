@@ -209,6 +209,43 @@ def create_app(db_name, testing=False):
         posts = current_tag.posts
         return render_template('tag_details.html', tag=current_tag, posts=posts)
     
+    @app.route('/tags/new')
+    def add_tag_form():
+        """Shows the form for adding a tag. Users can enter a name and submit to add the tag. Tag name must be unique and must be
+        50 characters or less"""
+        return render_template('add_tag_form.html')
+    
+    @app.route('/tags/new', methods=["POST"])
+    def add_tag():
+        """Processes the form data to add a new tag. If successful and all constraints are followed, redirects to the tags list page
+        where the new added tag is now included. If not, redirects to the add tag form and displays error messages."""
+
+        error_count = 0
+        tag_name = request.form["tag_name"]
+
+        #Check for errors
+        if not tag_name:
+            error_count += 1
+            flash("The tag name can't be empty. Please enter a tag name.")
+        elif len(tag_name) > 50:
+            error_count += 1
+            flash("The tag name can't be more than 50 characters.")
+        all_tags = Tag.query.all()
+        for tag in all_tags:
+            if tag_name == tag.name:
+                error_count += 1
+                flash("The tag name must be unique! Please enter a tag name that doesn't already exist.")
+                break;
+        
+        if error_count > 0:
+            return redirect(f'/tags/new')
+        new_tag = Tag(name=tag_name)
+        db.session.add(new_tag)
+        db.session.commit()
+
+        flash("Tag successfully added!")
+        return redirect('/tags')
+
     @app.errorhandler(404) 
     def not_found(e): 
         return render_template("404.html") 
