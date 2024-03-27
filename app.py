@@ -146,7 +146,8 @@ def create_app(db_name, testing=False):
         """Show the details for the post with the id of post_id. Includes the title, content, author, and links to go to the 
         detailed author page, edit the post, and delete the post."""
         post = Post.query.get_or_404(post_id)
-        return render_template("post_details.html", post=post)
+        tags = post.tags
+        return render_template("post_details.html", post=post, tags=tags)
     
     @app.route('/posts/<int:post_id>/edit')
     def edit_post_form(post_id):

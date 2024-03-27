@@ -8,6 +8,12 @@
     <hr>
     <p>By {{post.author.get_full_name()}}</p>
 
+    <p class="font-weight-bold">Tags:
+        {% for tag in tags %}
+            <span class="badge bg-primary">{{tag.name}}</span>
+        {% endfor %}
+    </p>
+
     <form>
         <button class="btn btn-info" formaction="/users/{{post.user_id}}" formmethod="GET">Go Back</button>
         <button class="btn btn-warning" formaction="/posts/{{post.id}}/edit" formmethod="GET">Edit Post</button>
